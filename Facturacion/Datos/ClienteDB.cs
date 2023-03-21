@@ -16,20 +16,20 @@ namespace Datos
             try
             {
                 StringBuilder sql = new StringBuilder();
-                sql.Append(" SELECT * FROM cliente WHERE Identidad = @Identidad; ");
+                sql.Append(" SELECT * FROM cliente Factura IdentidadCliente = @IdentidadCliente; ");
                 using (MySqlConnection _conexion = new MySqlConnection(cadena))
                 {
                     _conexion.Open();
                     using (MySqlCommand comando = new MySqlCommand(sql.ToString(), _conexion))
                     {
                         comando.CommandType = CommandType.Text;
-                        comando.Parameters.Add("@Identidad", MySqlDbType.VarChar, 25).Value = Identidad;
+                        comando.Parameters.Add("@IdentidadCliente", MySqlDbType.VarChar, 25).Value = Identidad;
                         MySqlDataReader dr = comando.ExecuteReader();
                         if (dr.Read())
                         {
                             cliente = new Cliente();
 
-                            cliente.Identidad = Identidad;
+                            cliente.Identidad = dr["Identidad"].ToString();
                             cliente.Nombre = dr["Nombre"].ToString();
                             cliente.Telefono = dr["Telefono"].ToString();
                             cliente.Correo = dr["Correo"].ToString();
