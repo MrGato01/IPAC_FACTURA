@@ -23,12 +23,13 @@ namespace Datos
                     using (MySqlCommand comando = new MySqlCommand(sql.ToString(), _conexion))
                     {
                         comando.CommandType = CommandType.Text;
+                        comando.Parameters.Add("@Identidad", MySqlDbType.VarChar, 25).Value = Identidad;
                         MySqlDataReader dr = comando.ExecuteReader();
                         if (dr.Read())
                         {
                             cliente = new Cliente();
 
-                            cliente.Identidad = dr["identidad"].ToString();
+                            cliente.Identidad = Identidad;
                             cliente.Nombre = dr["Nombre"].ToString();
                             cliente.Telefono = dr["Telefono"].ToString();
                             cliente.Correo = dr["Correo"].ToString();
@@ -141,6 +142,30 @@ namespace Datos
             {
                 StringBuilder sql = new StringBuilder();
                 sql.Append(" SELECT * FROM cliente ");
+                using (MySqlConnection _conexion = new MySqlConnection(cadena))
+                {
+                    _conexion.Open();
+                    using (MySqlCommand comando = new MySqlCommand(sql.ToString(), _conexion))
+                    {
+                        comando.CommandType = CommandType.Text;
+                        MySqlDataReader dr = comando.ExecuteReader();
+                        dt.Load(dr);
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+            }
+            return dt;
+        }
+        public DataTable DevolverClientesPorNombre(string nombre)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                StringBuilder sql = new StringBuilder();
+                sql.Append(" SELECT * FROM cliente WHERE Nombre LIKE '%" + nombre + "%'");
+
                 using (MySqlConnection _conexion = new MySqlConnection(cadena))
                 {
                     _conexion.Open();
